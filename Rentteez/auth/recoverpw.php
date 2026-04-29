@@ -42,45 +42,35 @@
                         <a href="#!" class="btn btn-soft-info avatar-md"><i class="ti ti-brand-linkedin fs-18"></i></a>
                     </div>
 
-                    <div id="step-1">
-                        <form action="#" method="POST" class="text-start mb-2">
-                            <div class="mb-2">
-                                <label class="form-label" for="recover-email">Email Address</label>
-                                <input type="email" id="recover-email" name="email" class="form-control" placeholder="Enter your email" required>
+                    <form action="verify-otp.php" method="POST" class="text-start mb-2">
+                        <div class="mb-3 text-center">
+                            <label class="form-label d-block mb-2">How would you like to recover?</label>
+                            <div class="d-flex justify-content-center gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="recovery_method" id="method-email" value="email" checked>
+                                    <label class="form-check-label" for="method-email">Email</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="recovery_method" id="method-mobile" value="mobile">
+                                    <label class="form-check-label" for="method-mobile">Mobile</label>
+                                </div>
                             </div>
-                            <div class="d-grid mt-3">
-                                <button class="btn btn-primary" type="button" id="send-reset-otp">Send Reset OTP</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
 
-                    <div id="step-2" style="display: none;">
-                        <form action="#" method="POST" class="text-start mb-2">
-                            <div class="mb-2">
-                                <label class="form-label" for="reset-otp">Enter OTP</label>
-                                <input type="text" id="reset-otp" name="otp" class="form-control" placeholder="Enter 6-digit OTP" required>
-                            </div>
-                            <div class="d-grid mt-3">
-                                <button class="btn btn-primary" type="button" id="verify-reset-otp">Verify OTP</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div id="email-field" class="mb-3">
+                            <label class="form-label" for="recover-email">Email Address</label>
+                            <input type="email" id="recover-email" name="email" class="form-control" placeholder="Enter your registered email">
+                        </div>
 
-                    <div id="step-3" style="display: none;">
-                        <form action="#" method="POST" class="text-start mb-2">
-                            <div class="mb-2">
-                                <label class="form-label" for="new-password">New Password</label>
-                                <input type="password" id="new-password" name="new_password" class="form-control" placeholder="Enter new password" required>
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label" for="confirm-new-password">Confirm Password</label>
-                                <input type="password" id="confirm-new-password" name="confirm_new_password" class="form-control" placeholder="Confirm new password" required>
-                            </div>
-                            <div class="d-grid mt-3">
-                                <button class="btn btn-primary" type="submit">Update Password</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div id="mobile-field" class="mb-3" style="display: none;">
+                            <label class="form-label" for="recover-mobile">Mobile Number</label>
+                            <input type="text" id="recover-mobile" name="mobile" class="form-control" placeholder="Enter your registered mobile">
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-primary" type="submit" id="send-btn">Send Reset Link</button>
+                        </div>
+                    </form>
 
                     <p class="text-danger fs-14 mb-2">Back To <a href="login.php" class="fw-semibold text-dark ms-1">Login !</a></p>
 
@@ -97,41 +87,26 @@
     <script src="../assets/js/app.js"></script>
 
     <script>
-        document.getElementById('send-reset-otp').addEventListener('click', function() {
-            const email = document.getElementById('recover-email').value;
-            if(email.includes('@')) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'OTP Sent!',
-                    text: 'A reset code has been sent to ' + email,
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(() => {
-                    document.getElementById('step-1').style.display = 'none';
-                    document.getElementById('step-2').style.display = 'block';
-                });
-            } else {
-                Swal.fire({ icon: 'error', title: 'Invalid Email', text: 'Please enter a valid email address' });
-            }
-        });
+        const emailRadio = document.getElementById('method-email');
+        const mobileRadio = document.getElementById('method-mobile');
+        const emailField = document.getElementById('email-field');
+        const mobileField = document.getElementById('mobile-field');
+        const sendBtn = document.getElementById('send-btn');
 
-        document.getElementById('verify-reset-otp').addEventListener('click', function() {
-            const otp = document.getElementById('reset-otp').value;
-            if(otp.length >= 4) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'OTP Verified!',
-                    text: 'Now you can set your new password.',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    document.getElementById('step-2').style.display = 'none';
-                    document.getElementById('step-3').style.display = 'block';
-                });
+        function toggleFields() {
+            if (emailRadio.checked) {
+                emailField.style.display = 'block';
+                mobileField.style.display = 'none';
+                sendBtn.innerText = 'Send Reset Link';
             } else {
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Please enter a valid OTP' });
+                emailField.style.display = 'none';
+                mobileField.style.display = 'block';
+                sendBtn.innerText = 'Send OTP';
             }
-        });
+        }
+
+        emailRadio.addEventListener('change', toggleFields);
+        mobileRadio.addEventListener('change', toggleFields);
     </script>
 
 </body>
