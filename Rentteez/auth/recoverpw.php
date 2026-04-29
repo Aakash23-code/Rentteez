@@ -16,6 +16,8 @@
     <link href="../assets/css/vendor.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
     <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- SweetAlert2 css -->
+    <link href="../assets/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="h-100">
@@ -40,17 +42,45 @@
                         <a href="#!" class="btn btn-soft-info avatar-md"><i class="ti ti-brand-linkedin fs-18"></i></a>
                     </div>
 
-                    <p class="fs-13 fw-semibold">Or Sign Up With Email</p>
+                    <div id="step-1">
+                        <form action="#" method="POST" class="text-start mb-2">
+                            <div class="mb-2">
+                                <label class="form-label" for="recover-email">Email Address</label>
+                                <input type="email" id="recover-email" name="email" class="form-control" placeholder="Enter your email" required>
+                            </div>
+                            <div class="d-grid mt-3">
+                                <button class="btn btn-primary" type="button" id="send-reset-otp">Send Reset OTP</button>
+                            </div>
+                        </form>
+                    </div>
 
-                    <form action="#" class="text-start mb-2">
-                        <div class="mb-2">
-                            <label class="form-label" for="example-email">Email</label>
-                            <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Enter your email">
-                        </div>
-                        <div class="d-grid">
-                            <button class="btn btn-primary" type="submit">Reset Password</button>
-                        </div>
-                    </form>
+                    <div id="step-2" style="display: none;">
+                        <form action="#" method="POST" class="text-start mb-2">
+                            <div class="mb-2">
+                                <label class="form-label" for="reset-otp">Enter OTP</label>
+                                <input type="text" id="reset-otp" name="otp" class="form-control" placeholder="Enter 6-digit OTP" required>
+                            </div>
+                            <div class="d-grid mt-3">
+                                <button class="btn btn-primary" type="button" id="verify-reset-otp">Verify OTP</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="step-3" style="display: none;">
+                        <form action="#" method="POST" class="text-start mb-2">
+                            <div class="mb-2">
+                                <label class="form-label" for="new-password">New Password</label>
+                                <input type="password" id="new-password" name="new_password" class="form-control" placeholder="Enter new password" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="confirm-new-password">Confirm Password</label>
+                                <input type="password" id="confirm-new-password" name="confirm_new_password" class="form-control" placeholder="Confirm new password" required>
+                            </div>
+                            <div class="d-grid mt-3">
+                                <button class="btn btn-primary" type="submit">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
 
                     <p class="text-danger fs-14 mb-2">Back To <a href="login.php" class="fw-semibold text-dark ms-1">Login !</a></p>
 
@@ -62,7 +92,47 @@
 
     <!-- Vendor js -->
     <script src="../assets/js/vendor.min.js"></script>
+    <!-- SweetAlert2 js -->
+    <script src="../assets/vendor/sweetalert2/sweetalert2.min.js"></script>
     <script src="../assets/js/app.js"></script>
+
+    <script>
+        document.getElementById('send-reset-otp').addEventListener('click', function() {
+            const email = document.getElementById('recover-email').value;
+            if(email.includes('@')) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'OTP Sent!',
+                    text: 'A reset code has been sent to ' + email,
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    document.getElementById('step-1').style.display = 'none';
+                    document.getElementById('step-2').style.display = 'block';
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Invalid Email', text: 'Please enter a valid email address' });
+            }
+        });
+
+        document.getElementById('verify-reset-otp').addEventListener('click', function() {
+            const otp = document.getElementById('reset-otp').value;
+            if(otp.length >= 4) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'OTP Verified!',
+                    text: 'Now you can set your new password.',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    document.getElementById('step-2').style.display = 'none';
+                    document.getElementById('step-3').style.display = 'block';
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Please enter a valid OTP' });
+            }
+        });
+    </script>
 
 </body>
 

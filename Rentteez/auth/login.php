@@ -24,6 +24,8 @@
 
     <!-- Icons css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- SweetAlert2 css -->
+    <link href="../assets/vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -118,8 +120,19 @@
                                 document.getElementById('otp-field').style.display = 'block';
                                 document.getElementById('verify-btn').disabled = false;
                                 this.innerText = 'Resend';
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'OTP Sent!',
+                                    text: 'A verification code has been sent to your mobile.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
                             } else {
-                                alert('Please enter a valid mobile number');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Invalid Number',
+                                    text: 'Please enter a valid 10-digit mobile number'
+                                });
                             }
                         });
                     </script>
@@ -131,7 +144,8 @@
     <!-- Vendor js -->
     <script src="../assets/js/vendor.min.js"></script>
 
-    <!-- App js -->
+    <!-- SweetAlert2 js -->
+    <script src="../assets/vendor/sweetalert2/sweetalert2.min.js"></script>
     <script src="../assets/js/app.js"></script>
 
 </body>
