@@ -32,22 +32,71 @@
 
                     <h3 class="fw-semibold mb-2">Set New Password</h3>
                     <p class="text-muted mb-4">Please create a strong new password for your Rentteez account.</p>
-
                     <form action="login.php" method="POST" class="text-start mb-2">
                         <div class="mb-3 text-start">
                             <label class="form-label" for="new-password">New Password</label>
                             <input type="password" id="new-password" name="password" class="form-control" placeholder="Enter new password" required>
+                            <div class="progress mt-2" style="height: 5px;">
+                                <div id="strength-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <small id="strength-text" class="text-muted fs-12">Strength: Too short</small>
                         </div>
                         <div class="mb-3 text-start">
                             <label class="form-label" for="confirm-password">Confirm New Password</label>
                             <input type="password" id="confirm-password" name="confirm_password" class="form-control" placeholder="Re-enter password" required>
                         </div>
                         <div class="mb-3 d-grid">
-                            <button class="btn btn-primary" type="submit">Update Password</button>
+                            <button class="btn btn-primary" type="submit" id="submit-btn" disabled>Update Password</button>
                         </div>
                     </form>
 
                     <p class="text-danger fs-14 mb-2">Back To <a href="login.php" class="fw-semibold text-dark ms-1">Login</a></p>
+
+                    <script>
+                        const passwordInput = document.getElementById('new-password');
+                        const confirmInput = document.getElementById('confirm-password');
+                        const strengthBar = document.getElementById('strength-bar');
+                        const strengthText = document.getElementById('strength-text');
+                        const submitBtn = document.getElementById('submit-btn');
+
+                        passwordInput.addEventListener('input', function() {
+                            const val = this.value;
+                            let strength = 0;
+                            
+                            if (val.length >= 6) strength += 25;
+                            if (val.length >= 10) strength += 25;
+                            if (/[A-Z]/.test(val)) strength += 25;
+                            if (/[0-9]/.test(val)) strength += 15;
+                            if (/[^A-Za-z0-9]/.test(val)) strength += 10;
+
+                            strengthBar.style.width = strength + '%';
+                            
+                            if (strength <= 30) {
+                                strengthBar.className = 'progress-bar bg-danger';
+                                strengthText.innerText = 'Strength: Weak';
+                                strengthText.className = 'text-danger fs-12';
+                            } else if (strength <= 70) {
+                                strengthBar.className = 'progress-bar bg-warning';
+                                strengthText.innerText = 'Strength: Medium';
+                                strengthText.className = 'text-warning fs-12';
+                            } else {
+                                strengthBar.className = 'progress-bar bg-success';
+                                strengthText.innerText = 'Strength: Strong';
+                                strengthText.className = 'text-success fs-12';
+                            }
+                            validatePasswords();
+                        });
+
+                        confirmInput.addEventListener('input', validatePasswords);
+
+                        function validatePasswords() {
+                            if (passwordInput.value === confirmInput.value && passwordInput.value.length >= 6) {
+                                submitBtn.disabled = false;
+                            } else {
+                                submitBtn.disabled = true;
+                            }
+                        }
+                    </script>
 
 
                 </div>

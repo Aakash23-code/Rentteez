@@ -64,6 +64,10 @@
                             <div class="col-md-6 mb-2">
                                 <label class="form-label" for="password">Password</label>
                                 <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                                <div class="progress mt-1" style="height: 3px;">
+                                    <div id="strength-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small id="strength-text" class="text-muted fs-11">Strength: Too short</small>
                             </div>
 
                             <div class="col-md-6 mb-2">
@@ -99,7 +103,7 @@
                         </div>
 
                         <div class="d-grid">
-                            <button class="btn btn-primary" type="submit" id="register-btn">Register Account</button>
+                            <button class="btn btn-primary" type="submit" id="register-btn" disabled>Register Account</button>
                         </div>
                     </form>
 
@@ -116,13 +120,15 @@
 
                         const stateSelect = document.getElementById('state');
                         const citySelect = document.getElementById('location');
+                        const passwordInput = document.getElementById('password');
+                        const confirmInput = document.getElementById('confirm_password');
+                        const strengthBar = document.getElementById('strength-bar');
+                        const strengthText = document.getElementById('strength-text');
+                        const registerBtn = document.getElementById('register-btn');
 
                         stateSelect.addEventListener('change', function() {
                             const selectedState = this.value;
-                            
-                            // Clear existing options
                             citySelect.innerHTML = '<option value="">Select City</option>';
-                            
                             if (selectedState && cityData[selectedState]) {
                                 citySelect.disabled = false;
                                 cityData[selectedState].forEach(city => {
@@ -135,6 +141,48 @@
                                 citySelect.disabled = true;
                             }
                         });
+
+                        passwordInput.addEventListener('input', function() {
+                            const val = this.value;
+                            let strength = 0;
+                            if (val.length >= 6) strength += 25;
+                            if (val.length >= 10) strength += 25;
+                            if (/[A-Z]/.test(val)) strength += 25;
+                            if (/[0-9]/.test(val)) strength += 15;
+                            if (/[^A-Za-z0-9]/.test(val)) strength += 10;
+
+                            strengthBar.style.width = strength + '%';
+                            if (strength <= 30) {
+                                strengthBar.className = 'progress-bar bg-danger';
+                                strengthText.innerText = 'Strength: Weak';
+                                strengthText.className = 'text-danger fs-11';
+                            } else if (strength <= 70) {
+                                strengthBar.className = 'progress-bar bg-warning';
+                                strengthText.innerText = 'Strength: Medium';
+                                strengthText.className = 'text-warning fs-11';
+                            } else {
+                                strengthBar.className = 'progress-bar bg-success';
+                                strengthText.innerText = 'Strength: Strong';
+                                strengthText.className = 'text-success fs-11';
+                            }
+                            validateForm();
+                        });
+
+                        confirmInput.addEventListener('input', validateForm);
+                        document.getElementById('terms').addEventListener('change', validateForm);
+
+                        function validateForm() {
+                            const passwordsMatch = passwordInput.value === confirmInput.value;
+                            const passwordValid = passwordInput.value.length >= 6;
+                            const termsAccepted = document.getElementById('terms').checked;
+                            const registerBtn = document.getElementById('register-btn');
+                            
+                            if (passwordsMatch && passwordValid && termsAccepted) {
+                                registerBtn.disabled = false;
+                            } else {
+                                registerBtn.disabled = true;
+                            }
+                        }
 
                         document.getElementById('send-otp').addEventListener('click', function() {
                             const mobile = document.getElementById('mobile').value;
