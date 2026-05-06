@@ -62,7 +62,7 @@
                     <div class="tab-content" id="pills-tabContent">
                         <!-- Email Login Tab -->
                         <div class="tab-pane fade show active" id="pills-email" role="tabpanel" aria-labelledby="pills-email-tab" tabindex="0">
-                            <form action="#" method="POST" class="text-start mb-2">
+                            <form id="email-login-form" action="#" method="POST" class="text-start mb-2">
                                 <div class="mb-2">
                                     <label class="form-label" for="email">Email</label>
                                     <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
@@ -89,7 +89,7 @@
 
                         <!-- OTP Login Tab -->
                         <div class="tab-pane fade" id="pills-otp" role="tabpanel" aria-labelledby="pills-otp-tab" tabindex="0">
-                            <form action="#" method="POST" class="text-start mb-2">
+                            <form id="otp-login-form" action="#" method="POST" class="text-start mb-2">
                                 <div class="mb-2">
                                     <label class="form-label" for="mobile">Mobile Number</label>
                                     <div class="input-group">
@@ -112,28 +112,104 @@
 
                     <p class="text-danger fs-14 mb-2">Don't have an account? <a href="register.php" class="fw-semibold text-dark ms-1">Sign Up !</a></p>
 
+                    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
                     <script>
-                        // Simple toggle logic for the Send OTP button
+                        // Firebase Configuration
+                        const firebaseConfig = {
+                            apiKey: "AIzaSyAx0KYL3tLqlzhIriFX16vXqe3AGCTDKmQ",
+                            authDomain: "rentteez.firebaseapp.com",
+                            projectId: "rentteez",
+                            storageBucket: "rentteez.firebasestorage.app",
+                            messagingSenderId: "611185590186",
+                            appId: "1:611185590186:web:34194c5c0b8d8aaf0335d3",
+                            measurementId: "G-GNQJ3MT5RD"
+                        };
+
+                        // Initialize Firebase
+                        firebase.initializeApp(firebaseConfig);
+                        const auth = firebase.auth();
+
+                        // Invisible ReCaptcha
+                        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-otp', {
+                            'size': 'invisible'
+                        });
+
+                        let confirmationResult;
+
+                        // Email Login Submit
+                        document.getElementById('email-login-form').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const formData = new FormData(this);
+                            formData.append('action', 'login_email');
+
+                            fetch('auth_handler.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.status === 'success') {
+                                    Swal.fire({ icon: 'success', title: 'Login Successful', text: data.message, timer: 1500, showConfirmButton: false })
+                                    .then(() => window.location.href = '../index.html');
+                                } else {
+                                    Swal.fire({ icon: 'error', title: 'Login Failed', text: data.message });
+                                }
+                            });
+                        });
+
+                        // Mobile OTP Logic
                         document.getElementById('send-otp').addEventListener('click', function() {
-                            const mobile = document.getElementById('mobile').value;
+                            let mobile = document.getElementById('mobile').value;
                             if(mobile.length >= 10) {
-                                document.getElementById('otp-field').style.display = 'block';
-                                document.getElementById('verify-btn').disabled = false;
-                                this.innerText = 'Resend';
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'OTP Sent!',
-                                    text: 'A verification code has been sent to your mobile.',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                                if(!mobile.startsWith('+')) mobile = '+91' + mobile;
+
+                                auth.signInWithPhoneNumber(mobile, window.recaptchaVerifier)
+                                    .then((result) => {
+                                        confirmationResult = result;
+                                        document.getElementById('otp-field').style.display = 'block';
+                                        document.getElementById('verify-btn').disabled = false;
+                                        this.innerText = 'Resend';
+                                        Swal.fire({ icon: 'success', title: 'OTP Sent!', text: 'Verification code sent to ' + mobile, timer: 2000, showConfirmButton: false });
+                                    }).catch((error) => {
+                                        Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+                                    });
                             } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Invalid Number',
-                                    text: 'Please enter a valid 10-digit mobile number'
-                                });
+                                Swal.fire({ icon: 'error', title: 'Invalid Number', text: 'Please enter a valid 10-digit mobile number' });
                             }
+                        });
+
+                        // Verify & Login with Mobile
+                        document.getElementById('otp-login-form').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const otp = document.getElementById('otp').value;
+                            const mobile = document.getElementById('mobile').value;
+
+                            confirmationResult.confirm(otp).then((result) => {
+                                const firebase_uid = result.user.uid;
+                                
+                                const formData = new FormData();
+                                formData.append('action', 'login_mobile');
+                                formData.append('mobile', mobile);
+                                formData.append('firebase_uid', firebase_uid);
+
+                                fetch('auth_handler.php', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if(data.status === 'success') {
+                                        Swal.fire({ icon: 'success', title: 'Login Successful', text: data.message, timer: 1500, showConfirmButton: false })
+                                        .then(() => window.location.href = '../index.html');
+                                    } else {
+                                        Swal.fire({ icon: 'error', title: 'Login Failed', text: data.message });
+                                    }
+                                });
+                            }).catch((error) => {
+                                Swal.fire({ icon: 'error', title: 'Invalid OTP', text: 'Please check the code and try again.' });
+                            });
                         });
                     </script>
                 </div>

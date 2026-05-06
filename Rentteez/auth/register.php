@@ -89,7 +89,7 @@
 
                             <div class="col-md-6 mb-2">
                                 <label class="form-label" for="location">City / Location</label>
-                                <select id="location" name="location" class="form-select" disabled required>
+                                <select id="location" name="city" class="form-select" disabled required>
                                     <option value="">Select City</option>
                                 </select>
                             </div>
@@ -109,7 +109,36 @@
 
                     <p class="fs-14 mb-0">Already have an account? <a href="login.php" class="fw-semibold text-dark ms-1">Login !</a></p>
 
+                    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
                     <script>
+                        // Firebase Configuration
+                        const firebaseConfig = {
+                            apiKey: "AIzaSyAx0KYL3tLqlzhIriFX16vXqe3AGCTDKmQ",
+                            authDomain: "rentteez.firebaseapp.com",
+                            projectId: "rentteez",
+                            storageBucket: "rentteez.firebasestorage.app",
+                            messagingSenderId: "611185590186",
+                            appId: "1:611185590186:web:34194c5c0b8d8aaf0335d3",
+                            measurementId: "G-GNQJ3MT5RD"
+                        };
+
+                        // Initialize Firebase
+                        firebase.initializeApp(firebaseConfig);
+                        const auth = firebase.auth();
+
+                        // Invisible ReCaptcha
+                        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-otp', {
+                            'size': 'invisible',
+                            'callback': (response) => {
+                                // reCAPTCHA solved
+                            }
+                        });
+
+                        let confirmationResult;
+                        let isOtpVerified = false;
+
                         const cityData = {
                             'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
                             'Delhi': ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi'],
@@ -175,34 +204,84 @@
                             const passwordsMatch = passwordInput.value === confirmInput.value;
                             const passwordValid = passwordInput.value.length >= 6;
                             const termsAccepted = document.getElementById('terms').checked;
-                            const registerBtn = document.getElementById('register-btn');
                             
-                            if (passwordsMatch && passwordValid && termsAccepted) {
+                            if (passwordsMatch && passwordValid && termsAccepted && isOtpVerified) {
                                 registerBtn.disabled = false;
                             } else {
                                 registerBtn.disabled = true;
                             }
                         }
 
+                        // Send OTP Logic
                         document.getElementById('send-otp').addEventListener('click', function() {
-                            const mobile = document.getElementById('mobile').value;
+                            let mobile = document.getElementById('mobile').value;
                             if(mobile.length >= 10) {
-                                document.getElementById('otp-field').style.display = 'block';
-                                this.innerText = 'Resend OTP';
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'OTP Sent!',
-                                    text: 'A verification code has been sent to your mobile.',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
+                                if(!mobile.startsWith('+')) mobile = '+91' + mobile; 
+
+                                auth.signInWithPhoneNumber(mobile, window.recaptchaVerifier)
+                                    .then((result) => {
+                                        confirmationResult = result;
+                                        document.getElementById('otp-field').style.display = 'block';
+                                        this.innerText = 'Resend OTP';
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'OTP Sent!',
+                                            text: 'A verification code has been sent to ' + mobile,
+                                            timer: 2000,
+                                            showConfirmButton: false
+                                        });
+                                    }).catch((error) => {
+                                        console.error(error);
+                                        Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+                                    });
                             } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Invalid Number',
-                                    text: 'Please enter a valid 10-digit mobile number'
+                                Swal.fire({ icon: 'error', title: 'Invalid Number', text: 'Please enter a valid 10-digit mobile number' });
+                            }
+                        });
+
+                        // Verify OTP Logic
+                        document.getElementById('otp').addEventListener('input', function() {
+                            const otp = this.value;
+                            if(otp.length === 6) {
+                                confirmationResult.confirm(otp).then((result) => {
+                                    isOtpVerified = true;
+                                    window.firebase_uid = result.user.uid;
+                                    this.classList.add('is-valid');
+                                    this.disabled = true;
+                                    document.getElementById('send-otp').disabled = true;
+                                    Swal.fire({ icon: 'success', title: 'Verified!', text: 'Mobile number verified.', timer: 1500, showConfirmButton: false });
+                                    validateForm();
+                                }).catch((error) => {
+                                    Swal.fire({ icon: 'error', title: 'Invalid OTP', text: 'Please check the code.' });
                                 });
                             }
+                        });
+
+                        // AJAX Registration
+                        document.querySelector('form').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const formData = new FormData(this);
+                            formData.append('action', 'register');
+                            formData.append('firebase_uid', window.firebase_uid);
+
+                            fetch('auth_handler.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.status === 'success') {
+                                    Swal.fire({ icon: 'success', title: 'Success', text: data.message }).then(() => {
+                                        window.location.href = 'login.php';
+                                    });
+                                } else {
+                                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong!' });
+                            });
                         });
                     </script>
 
@@ -220,6 +299,4 @@
 
 </body>
 
-
-
-</html>
+</html>
