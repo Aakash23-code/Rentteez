@@ -97,16 +97,57 @@
             if (emailRadio.checked) {
                 emailField.style.display = 'block';
                 mobileField.style.display = 'none';
-                sendBtn.innerText = 'Send Reset Link';
+                sendBtn.innerText = 'Send Reset OTP';
             } else {
                 emailField.style.display = 'none';
                 mobileField.style.display = 'block';
-                sendBtn.innerText = 'Send OTP';
+                sendBtn.innerText = 'Send Mobile OTP';
             }
         }
 
         emailRadio.addEventListener('change', toggleFields);
         mobileRadio.addEventListener('change', toggleFields);
+
+        // AJAX Submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const method = document.querySelector('input[name="recovery_method"]:checked').value;
+            if(method === 'mobile') {
+                Swal.fire({ icon: 'info', title: 'Coming Soon', text: 'Mobile recovery is not implemented yet. Please use Email.' });
+                return;
+            }
+
+            const formData = new FormData(this);
+            formData.append('action', 'send_recovery_otp');
+
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Sending...';
+
+            fetch('auth_handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                sendBtn.disabled = false;
+                sendBtn.innerText = 'Send Reset OTP';
+                
+                if(data.status === 'success') {
+                    Swal.fire({ icon: 'success', title: 'OTP Sent', text: data.message }).then(() => {
+                        window.location.href = 'verify-otp.php';
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                }
+            })
+            .catch(err => {
+                sendBtn.disabled = false;
+                sendBtn.innerText = 'Send Reset OTP';
+                console.error(err);
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong!' });
+            });
+        });
     </script>
 
 </body>

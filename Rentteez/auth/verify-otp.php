@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,7 +47,7 @@
                             <button class="btn btn-primary" type="submit">Verify OTP</button>
                         </div>
                         <div class="text-center">
-                            <p class="mb-1 fs-13">Don't receive code? <a href="#!" id="resend-link" class="link-primary fw-semibold text-decoration-underline disabled">Resend OTP</a></p>
+                            <p class="mb-1 fs-13">Don't receive code? <a href="#!" id="resend-link" class="link-primary fw-semibold text-decoration-underline">Resend OTP</a></p>
                             <p class="mb-0 fs-13"><a href="recoverpw.php" class="text-muted border-bottom border-dashed small">Change Email / Mobile</a></p>
                         </div>
                     </form>
@@ -70,34 +71,95 @@
         let timeLeft = 120; // 2 minutes
         const timerElement = document.getElementById('timer');
         const resendLink = document.getElementById('resend-link');
+        let timerInterval;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
-            timerElement.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const timerSpan = document.getElementById('timer');
+            if(timerSpan) {
+                timerSpan.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
             
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
-                resendLink.classList.remove('disabled');
                 document.getElementById('otp-timer').classList.remove('bg-soft-danger', 'text-danger');
                 document.getElementById('otp-timer').classList.add('bg-soft-success', 'text-success');
-                document.getElementById('otp-timer').innerText = 'You can now resend the code';
+                document.getElementById('otp-timer').innerText = 'Code expired. Please resend.';
             }
             timeLeft--;
         }
 
-        const timerInterval = setInterval(updateTimer, 1000);
+        startTimer();
+
+        // AJAX Verification
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            formData.append('action', 'verify_recovery_otp');
+
+            fetch('auth_handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    Swal.fire({ icon: 'success', title: 'Verified', text: data.message }).then(() => {
+                        window.location.href = 'reset-password.php';
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                }
+            });
+        });
 
         resendLink.addEventListener('click', function(e) {
+            e.preventDefault();
             if (this.classList.contains('disabled')) return;
-            Swal.fire({
-                icon: 'success',
-                title: 'OTP Resent!',
-                text: 'A new verification code has been sent.',
-                timer: 2000,
-                showConfirmButton: false
+            
+            const formData = new FormData();
+            formData.append('action', 'send_recovery_otp');
+            formData.append('email', '<?php echo $_SESSION["recovery_email"] ?? ""; ?>');
+
+            resendLink.classList.add('disabled');
+            resendLink.innerText = 'Sending...';
+
+            fetch('auth_handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    Swal.fire({ icon: 'success', title: 'OTP Sent!', text: 'A new verification code has been sent.', timer: 2000, showConfirmButton: false });
+                    
+                    // Reset timer logic
+                    timeLeft = 120;
+                    resendLink.classList.remove('disabled');
+                    resendLink.innerText = 'Resend OTP';
+                    
+                    document.getElementById('otp-timer').innerHTML = 'Expires in <span id="timer">02:00</span>';
+                    document.getElementById('otp-timer').classList.remove('bg-soft-success', 'text-success');
+                    document.getElementById('otp-timer').classList.add('bg-soft-danger', 'text-danger');
+                    
+                    startTimer();
+                } else {
+                    resendLink.classList.remove('disabled');
+                    resendLink.innerText = 'Resend OTP';
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                }
+            })
+            .catch(err => {
+                resendLink.classList.remove('disabled');
+                resendLink.innerText = 'Resend OTP';
+                console.error(err);
             });
-            // Reset timer logic would go here
         });
     </script>
 

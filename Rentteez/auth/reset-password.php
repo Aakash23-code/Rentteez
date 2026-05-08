@@ -96,6 +96,28 @@
                                 submitBtn.disabled = true;
                             }
                         }
+
+                        // AJAX Submission
+                        document.querySelector('form').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const formData = new FormData(this);
+                            formData.append('action', 'reset_password');
+
+                            fetch('auth_handler.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.status === 'success') {
+                                    Swal.fire({ icon: 'success', title: 'Success', text: data.message }).then(() => {
+                                        window.location.href = 'login.php';
+                                    });
+                                } else {
+                                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                                }
+                            });
+                        });
                     </script>
 
 
