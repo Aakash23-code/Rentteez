@@ -4,10 +4,9 @@
 <!-- Sidebar -->
 <nav id="sidebar" class="sidebar js-sidebar">
     <div class="sidebar-content js-simplebar">
-        <a class='sidebar-brand' href='index.html'>
+        <a class='sidebar-brand' href='Customer/dashboard.php'>
             <span class="sidebar-brand-text align-middle">
-                AdminKit
-                <sup><small class="badge bg-primary text-uppercase">Pro</small></sup>
+                Rentteez
             </span>
             <svg class="sidebar-brand-icon align-middle" width="32px" height="32px" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5"
                 stroke-linecap="square" stroke-linejoin="miter" color="#FFFFFF" style="margin-left: -3px">
@@ -20,24 +19,20 @@
         <div class="sidebar-user">
             <div class="d-flex justify-content-center">
                 <div class="flex-shrink-0">
-                    <img src="../demo.adminkit.io/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" />
+                    <img src="assets/images/users/avatar-1.jpg" class="avatar img-fluid rounded me-1" alt="User" />
                 </div>
                 <div class="flex-grow-1 ps-2">
                     <a class="sidebar-user-title dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        Charles Hall
+                        User Profile
                     </a>
                     <div class="dropdown-menu dropdown-menu-start">
-                        <a class='dropdown-item' href='pages-profile.html'><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-                        <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
+                        <a class='dropdown-item' href='Customer/profile.php'><i class="align-middle me-1" data-feather="user"></i> Profile</a>
                         <div class="dropdown-divider"></div>
-                        <a class='dropdown-item' href='pages-settings.html'><i class="align-middle me-1" data-feather="settings"></i> Settings &
-                            Privacy</a>
-                        <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
+                        <a class='dropdown-item' href='Customer/settings.php'><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Log out</a>
+                        <a class="dropdown-item" href="auth/logout.php">Log out</a>
                     </div>
-
-                    <div class="sidebar-user-subtitle">Designer</div>
+                    <div class="sidebar-user-subtitle">Customer</div>
                 </div>
             </div>
         </div>
@@ -47,40 +42,19 @@
                 Pages
             </li>
             <li class="sidebar-item active">
-                <a data-bs-target="#dashboards" data-bs-toggle="collapse" class="sidebar-link">
-                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboards</span>
+                <a class='sidebar-link' href='Customer/dashboard.php'>
+                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
                 </a>
-                <ul id="dashboards" class="sidebar-dropdown list-unstyled collapse show" data-bs-parent="#sidebar">
-                    <li class="sidebar-item active"><a class='sidebar-link' href='index.html'>Analytics</a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='dashboard-ecommerce.html'>E-Commerce <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='dashboard-crypto.html'>Crypto <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                </ul>
             </li>
 
             <li class="sidebar-item">
-                <a data-bs-target="#pages" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                    <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Pages</span>
+                <a class='sidebar-link' href='Customer/orders.php'>
+                    <i class="align-middle" data-feather="shopping-bag"></i> <span class="align-middle">My Orders</span>
                 </a>
-                <ul id="pages" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-settings.html'>Settings</a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-projects.html'>Projects <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-clients.html'>Clients <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-orders.html'>Orders <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-pricing.html'>Pricing <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-chat.html'>Chat <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='pages-blank.html'>Blank Page</a></li>
-                </ul>
             </li>
 
             <li class="sidebar-item">
-                <a class='sidebar-link' href='pages-profile.html'>
+                <a class='sidebar-link' href='Customer/profile.php'>
                     <i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
                 </a>
             </li>
@@ -179,17 +153,9 @@
                 Plugins & Addons
             </li>
             <li class="sidebar-item">
-                <a data-bs-target="#form-plugins" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                    <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Form Plugins</span>
+                <a class='sidebar-link' href='Customer/kyc.php'>
+                    <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">KYC Verification</span>
                 </a>
-                <ul id="form-plugins" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-                    <li class="sidebar-item"><a class='sidebar-link' href='forms-advanced-inputs.html'>Advanced Inputs <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='forms-editors.html'>Editors <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                    <li class="sidebar-item"><a class='sidebar-link' href='forms-validation.html'>Validation <span
-                                class="sidebar-badge badge bg-primary">Pro</span></a></li>
-                </ul>
             </li>
             <li class="sidebar-item">
                 <a data-bs-target="#datatables" data-bs-toggle="collapse" class="sidebar-link collapsed">
@@ -221,9 +187,8 @@
                 </ul>
             </li>
             <li class="sidebar-item">
-                <a class='sidebar-link' href='notifications.html'>
+                <a class='sidebar-link' href='Customer/notifications.php'>
                     <i class="align-middle" data-feather="bell"></i> <span class="align-middle">Notifications</span>
-                    <span class="sidebar-badge badge bg-primary">Pro</span>
                 </a>
             </li>
             <li class="sidebar-item">
@@ -448,7 +413,7 @@
                             <a href="#" class="list-group-item">
                                 <div class="row g-0 align-items-center">
                                     <div class="col-2">
-                                        <img src="../demo.adminkit.io/img/avatars/avatar-5.jpg" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
+                                        <img src="assets/images/users/avatar-5.jpg" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
                                     </div>
                                     <div class="col-10 ps-2">
                                         <div class="text-dark">Vanessa Tucker</div>
@@ -460,7 +425,7 @@
                             <a href="#" class="list-group-item">
                                 <div class="row g-0 align-items-center">
                                     <div class="col-2">
-                                        <img src="../demo.adminkit.io/img/avatars/avatar-2.jpg" class="avatar img-fluid rounded-circle" alt="William Harris">
+                                        <img src="assets/images/users/avatar-2.jpg" class="avatar img-fluid rounded-circle" alt="William Harris">
                                     </div>
                                     <div class="col-10 ps-2">
                                         <div class="text-dark">William Harris</div>
@@ -472,7 +437,7 @@
                             <a href="#" class="list-group-item">
                                 <div class="row g-0 align-items-center">
                                     <div class="col-2">
-                                        <img src="../demo.adminkit.io/img/avatars/avatar-4.jpg" class="avatar img-fluid rounded-circle" alt="Christina Mason">
+                                        <img src="assets/images/users/avatar-4.jpg" class="avatar img-fluid rounded-circle" alt="Christina Mason">
                                     </div>
                                     <div class="col-10 ps-2">
                                         <div class="text-dark">Christina Mason</div>
@@ -484,7 +449,7 @@
                             <a href="#" class="list-group-item">
                                 <div class="row g-0 align-items-center">
                                     <div class="col-2">
-                                        <img src="../demo.adminkit.io/img/avatars/avatar-3.jpg" class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
+                                        <img src="assets/images/users/avatar-3.jpg" class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
                                     </div>
                                     <div class="col-10 ps-2">
                                         <div class="text-dark">Sharon Lessman</div>
@@ -501,23 +466,23 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-flag dropdown-toggle" href="#" id="languageDropdown" data-bs-toggle="dropdown">
-                        <img src="../demo.adminkit.io/img/flags/us.png" alt="English" />
+                        <img src="assets/images/flags/us.svg" alt="English" width="20" />
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
                         <a class="dropdown-item" href="#">
-                            <img src="../demo.adminkit.io/img/flags/us.png" alt="English" width="20" class="align-middle me-1" />
+                            <img src="assets/images/flags/us.svg" alt="English" width="20" class="align-middle me-1" />
                             <span class="align-middle">English</span>
                         </a>
                         <a class="dropdown-item" href="#">
-                            <img src="../demo.adminkit.io/img/flags/es.png" alt="Spanish" width="20" class="align-middle me-1" />
+                            <img src="assets/images/flags/es.svg" alt="Spanish" width="20" class="align-middle me-1" />
                             <span class="align-middle">Spanish</span>
                         </a>
                         <a class="dropdown-item" href="#">
-                            <img src="../demo.adminkit.io/img/flags/ru.png" alt="Russian" width="20" class="align-middle me-1" />
+                            <img src="assets/images/flags/ru.svg" alt="Russian" width="20" class="align-middle me-1" />
                             <span class="align-middle">Russian</span>
                         </a>
                         <a class="dropdown-item" href="#">
-                            <img src="../demo.adminkit.io/img/flags/de.png" alt="German" width="20" class="align-middle me-1" />
+                            <img src="assets/images/flags/de.svg" alt="German" width="20" class="align-middle me-1" />
                             <span class="align-middle">German</span>
                         </a>
                     </div>
@@ -531,17 +496,14 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-icon pe-md-0 dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <img src="../demo.adminkit.io/img/avatars/avatar.jpg" class="avatar img-fluid rounded" alt="Charles Hall" />
+                        <img src="assets/images/users/avatar-1.jpg" class="avatar img-fluid rounded" alt="User" />
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
-                        <a class='dropdown-item' href='pages-profile.html'><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-                        <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
+                        <a class='dropdown-item' href='Customer/profile.php'><i class="align-middle me-1" data-feather="user"></i> Profile</a>
                         <div class="dropdown-divider"></div>
-                        <a class='dropdown-item' href='pages-settings.html'><i class="align-middle me-1" data-feather="settings"></i> Settings &
-                            Privacy</a>
-                        <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
+                        <a class='dropdown-item' href='Customer/settings.php'><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Log out</a>
+                        <a class="dropdown-item" href="auth/logout.php">Log out</a>
                     </div>
                 </li>
             </ul>

@@ -10,15 +10,18 @@
 	<meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
 	<link rel="preconnect" href="https://fonts.gstatic.com/">
-	<link rel="shortcut icon" href="../demo.adminkit.io/img/icons/icon-48x48.png" />
+	<link rel="shortcut icon" href="assets/images/favicon.ico" />
 
 	<title>Navbar Test | Rentteez</title>
 
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap" rel="stylesheet">
 
 	<!-- AdminKit CSS -->
-	<link class="js-stylesheet" href="../demo.adminkit.io/css/light.css" rel="stylesheet">
-    
+	<link rel="stylesheet" href="assets/css/light.css">
+
+    <!-- AdminKit Settings JS (Must be in head for theme init) -->
+    <script src="assets/adminkit/settings.js"></script>
+
     <style>
 		body {
 			opacity: 0;
@@ -72,7 +75,7 @@
 	</div>
 
 	<!-- AdminKit JS -->
-	<script src="../demo.adminkit.io/js/app.js"></script>
+	<script src="assets/adminkit/adminkit.js"></script>
 
 </body>
 
